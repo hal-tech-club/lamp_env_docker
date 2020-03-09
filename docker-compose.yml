@@ -1,0 +1,55 @@
+version: '3'
+services:
+  web:
+    build:
+      context: ./nginx
+      dockerfile: dockerfile
+    ports:
+        - 8080:80
+    volumes:
+        - ./html:/var/www/html
+        - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    links:
+        - php
+    restart: always
+
+  php:
+    build:
+      context: ./php
+      dockerfile: dockerfile
+    volumes:
+        - ./php/php.ini:/usr/local/etc/php/php.ini
+        - ./html:/var/www/html
+    links:
+        - mysql:mysql
+    restart: always
+
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - 13306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root         #ここにroot用のパスワードを記載
+      MYSQL_DATABASE: example         #ここにデータベースを記載
+      MYSQL_USER: root           #ここにユーザ名を記載
+      MYSQL_PASSWORD: root   #ここにユーザ用パスワードを記載
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=root # mysqlの接続ユーザーのユーザー名
+      - PMA_PASSWORD=root # mysqlの接続ユーザーのパスワード
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    ports:
+      - 4001:80
+    volumes:
+      - ./phpmyadmin/sessions:/sessions
+    restart: always
