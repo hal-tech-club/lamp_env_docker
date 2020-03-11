@@ -30,7 +30,7 @@ services:
       - 13306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root         #ここにroot用のパスワードを記載
-      MYSQL_DATABASE: example         #ここにデータベースを記載
+      MYSQL_DATABASE: sample         #ここにデータベースを記載
       MYSQL_USER: root           #ここにユーザ名を記載
       MYSQL_PASSWORD: root   #ここにユーザ用パスワードを記載
 
