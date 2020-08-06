@@ -1,40 +1,44 @@
-version: '3'
+version: "3"
 services:
   web:
+    container_name: nginx
     build:
       context: ./nginx
       dockerfile: dockerfile
     ports:
-        - 8080:80
+      - 8080:80
     volumes:
-        - ./html:/var/www/html
-        - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./html:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     links:
-        - php
+      - php
 
   php:
+    container_name: php
     build:
       context: ./php
       dockerfile: dockerfile
     volumes:
-        - ./php/php.ini:/usr/local/etc/php/php.ini
-        - ./html:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+      - ./html:/var/www/html
     links:
-        - mysql:mysql
+      - mysql:mysql
 
   mysql:
+    container_name: mysql57
     image: mysql:5.7
     volumes:
       - ./mysql:/var/lib/mysql
     ports:
       - 13306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: root         #ここにroot用のパスワードを記載
-      MYSQL_DATABASE: sample         #ここにデータベースを記載
-      MYSQL_USER: root           #ここにユーザ名を記載
-      MYSQL_PASSWORD: root   #ここにユーザ用パスワードを記載
+      MYSQL_ROOT_PASSWORD: root #ここにroot用のパスワードを記載
+      MYSQL_DATABASE: sample #ここにデータベースを記載
+      MYSQL_USER: root #ここにユーザ名を記載
+      MYSQL_PASSWORD: root #ここにユーザ用パスワードを記載
 
   phpmyadmin:
+    container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
     environment:
       - PMA_ARBITRARY=1
